@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="wrap_content"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	tools:context=".MainActivity">
+
+    <Button
+    	android:id="@+id/button1"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="표지판소개"/>
+
+    <Button
+    	android:id="@+id/button2"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="퀴즈"/>
+
+    <Button
+    	android:id="@+id/button3"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="퍼즐맞추기"/>
+    
+    <Button
+    	android:id="@+id/button4"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="숨은그림찾기"/>
+    
+     <Button
+    	android:id="@+id/button5"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:text="카드짝맞추기게임"/>
+    
+
+</LinearLayout>
