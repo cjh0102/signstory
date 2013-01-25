@@ -1,11 +1,9 @@
 package com.hipits.customview;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.hipits.R;
 import com.hipits.activity.HiddenImageActivity;
-import com.hipits.activity.PuzzlesActivity;
 import com.hipits.manager.PointManager;
 import com.hipits.model.Point;
 
@@ -25,7 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class HiddenImageView extends View {
-
+	//test
 	private float x;
 	private float y;
 	private Bitmap faileBitmap;
