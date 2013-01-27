@@ -54,7 +54,7 @@ public class HiddenImageActivity extends Activity {
 		initImageView();
 
 		countProgressBar = (ProgressBar)findViewById(R.id.countProgressBar);
-		countProgressBar.setMax(5);
+		countProgressBar.setMax(30);
 		
 		startTimeCount();
 		
@@ -73,7 +73,7 @@ public class HiddenImageActivity extends Activity {
 		AsyncTask<Void, Integer, Void> timeCounterAsyncTask = new AsyncTask<Void, Integer, Void>(){
 			@Override
 			protected Void doInBackground(Void... params) {
-				for (int i = 5; i >= 0; i--) {
+				for (int i = 30; i >= 0; i--) {
 					if (!hiddenImageView.isEnd()) {
 						publishProgress(i);
 						SystemClock.sleep(1000);

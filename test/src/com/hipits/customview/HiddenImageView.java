@@ -1,11 +1,7 @@
 package com.hipits.customview;
 
 import java.util.ArrayList;
-
-import com.hipits.R;
-import com.hipits.activity.HiddenImageActivity;
-import com.hipits.manager.PointManager;
-import com.hipits.model.Point;
+import java.util.TimerTask;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -17,10 +13,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.hipits.R;
+import com.hipits.activity.HiddenImageActivity;
+import com.hipits.manager.PointManager;
+import com.hipits.model.Point;
 
 public class HiddenImageView extends View {
 	//test
@@ -31,6 +36,7 @@ public class HiddenImageView extends View {
 	private Boolean isStart = false;
 	private Boolean isCorrect = false;
 	private Paint paint;
+	private Paint fadePaint;
 	private ArrayList<Rect> correctRects;
 	private ArrayList<Point> correctPoints;
 	private Context context;
@@ -43,6 +49,8 @@ public class HiddenImageView extends View {
 		correctBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher2);
 
 		paint = new Paint();
+		fadePaint = new Paint();
+
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Paint.Style.STROKE);
 
@@ -58,15 +66,16 @@ public class HiddenImageView extends View {
 	@SuppressWarnings("unchecked")
 
 	@Override
-	protected void onDraw(Canvas canvas) {
-	
+	protected void onDraw(final Canvas canvas) {
+
 		if (isStart == true) {
 			if (isCorrect == false) {
 				// 정답이 아닌 곳을 눌렀을경우 X를 그림
 				float xx = x - (faileBitmap.getWidth() / 2);
 				float yy = y - (faileBitmap.getHeight() / 2);
-				canvas.drawBitmap(faileBitmap, xx, yy, null);
+				canvas.drawBitmap(faileBitmap, xx, yy, fadePaint);
 			}
+
 			// 정답인 곳 저장
 			for (Point correctPoint : correctPoints) {
 				float xX = correctPoint.getX() - (correctBitmap.getWidth() / 2);
@@ -78,7 +87,7 @@ public class HiddenImageView extends View {
 		for (Rect rect : correctRects) {
 			canvas.drawRect(rect, paint);
 		}
-		
+
 		if (isEnd()) {
 			showDialog();
 		}
@@ -114,7 +123,7 @@ public class HiddenImageView extends View {
 	}
 
 	public void isCorrect(Point touchPoint) {
-		
+
 		int i = 0;
 
 		for (Rect rect : correctRects) {
@@ -129,11 +138,12 @@ public class HiddenImageView extends View {
 
 		if (i == 3) {
 			isCorrect = false;
+			fadeOutImage();
+			return;
 		}
-		
 		invalidate();
 	}
-	
+
 	private void resetGame() {
 		correctPoints.clear();
 		((HiddenImageActivity)context).startTimeCount();
@@ -141,8 +151,9 @@ public class HiddenImageView extends View {
 		setBackgroundColor(Color.YELLOW);
 		invalidate();
 	}
-	
+
 	private void showDialog() {
+
 		AlertDialog.Builder dialog= new AlertDialog.Builder(context);
 		dialog.setTitle("축하합니다");
 		dialog.setMessage("성공");
@@ -152,7 +163,7 @@ public class HiddenImageView extends View {
 				((HiddenImageActivity)context).finish();
 			}
 		});
-		
+
 		dialog.setNegativeButton("더 할래요!", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -167,5 +178,27 @@ public class HiddenImageView extends View {
 			return true;
 		}
 		return false;
+	}
+
+	public void fadeOutImage() {
+
+		final Handler handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				fadePaint.setAlpha(msg.what);
+				invalidate();
+			}
+		};
+		
+		AsyncTask<Void, Integer, Void> asyncTask = new AsyncTask<Void, Integer, Void>() {
+			@Override
+			protected Void doInBackground(Void... params) {
+				for (int i = 255; i >= 0; i = i - 51) {
+					SystemClock.sleep(100);
+					handler.sendEmptyMessage(i);
+				}
+				return null;
+			}
+		}.execute();
 	}
 }
