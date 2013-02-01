@@ -29,5 +29,4 @@ public class BookDescriptionActivity extends Activity {
 		descriptionTextView.setText(DataManager.signs.get(index).getDescription());
 		
 	}
-	
 }

@@ -92,10 +92,6 @@ public class HiddenImageView extends View {
 		for (Rect rect : correctRects) {
 			canvas.drawRect(rect, paint);
 		}
-
-		if (isEnd()) {
-			showDialog();
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -109,6 +105,10 @@ public class HiddenImageView extends View {
 			Log.e("터치", "터치터치터치");
 
 			isCorrect(touchPoint);
+			
+			if (isEnd()) {
+				showDialog();
+			}
 		}
 		return true;
 	}
@@ -133,8 +133,10 @@ public class HiddenImageView extends View {
 		for (Rect rect : correctRects) {
 			if (rect.contains(touchPoint.getX(), touchPoint.getY())) {
 				isCorrect = true;
+				
 				correctPoints.add(new Point(rect.centerX(), rect.centerY(), 0));
 				((HiddenImageActivity)context).checkCorrectImage(i);
+				
 				invalidate();
 				return;
 			}
@@ -150,9 +152,9 @@ public class HiddenImageView extends View {
 
 	private void resetGame() {
 		correctPoints.clear();
-		((HiddenImageActivity)context).startTimeCount();
+		((HiddenImageActivity)context).countNumber = 5;
 		((HiddenImageActivity)context).initImageView();
-		setBackgroundColor(Color.YELLOW);
+		//setBackgroundColor(Color.YELLOW);
 		invalidate();
 	}
 

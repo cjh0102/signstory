@@ -110,7 +110,7 @@ public class PuzzleGameView extends View {
 			
 			public void onClick(DialogInterface dialog, int which) {
 				shuffle();
-				((PuzzlesActivity)context).startTimeCount();
+				((PuzzlesActivity)context).countNumber = 5;
 				dialog.dismiss();
 			}
 		});

@@ -1,12 +1,17 @@
 package com.hipits.activity;
 
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -20,44 +25,18 @@ public class PuzzlesActivity extends Activity {
 
 	private ProgressBar countProgressBar;
 	private PuzzleGameView puzzleGameView;
+	public int countNumber = 5;
 	
-	@Override
-	protected void onStart() {
-		super.onStart();
-		Log.e("onStart", "onStart");
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		Log.e("onResume", "" + timeCounterAsyncTask.getStatus());
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		Log.e("onPause", "onPause");
-	}
-	@Override
-	protected void onStop() {
-		super.onStop();
-		Log.e("onStop", "onStop");
-	}
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		Log.e("onDestroy", "" + timeCounterAsyncTask.getStatus());
-	}
-	
-	AsyncTask<Void, Integer, Void> timeCounterAsyncTask;
-
 	@Override 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_puzzle);
 		
 		countProgressBar = (ProgressBar)findViewById(R.id.counterProgressBar);
-		countProgressBar.setMax(20);
+		countProgressBar.setMax(5);
+		
+		startTimeCount();
+
 		puzzleGameView = (PuzzleGameView)findViewById(R.id.puzzleGameView);
 		
 		findViewById(R.id.homeImageViewButton).setOnClickListener(new OnClickListener() {
@@ -68,42 +47,42 @@ public class PuzzlesActivity extends Activity {
 				startActivity(intent);
 			}
 		});
-		startTimeCount();
+		
 	}
 
 	public void startTimeCount() {
-
-		timeCounterAsyncTask = new AsyncTask<Void, Integer, Void>(){
-
+		countNumber = 5;
+		
+		final Timer timer = new Timer();
+		
+		final Handler handler = new Handler() {
 			@Override
-			protected Void doInBackground(Void... params) {
-				for (int i = 20; i >= 0; i--) {
-						if (puzzleGameView.isEnd == false) {
-							publishProgress(i);
-							SystemClock.sleep(1000);
-						}
-				}
-				return null;
-			}
-
-			@Override
-			protected void onProgressUpdate(Integer... values) {
-				countProgressBar.setProgress(values[0]);
-			}
-
-			@Override
-			protected void onPostExecute(Void result) {
-				if (!isFinishing()&& puzzleGameView.isEnd == false) {
+			public void handleMessage(Message msg) {
+				if (msg.what == 0) {
 					showFailDialog();
 				}
 			}
-
+		};
+		
+		final TimerTask timerTask = new TimerTask() {
 			@Override
-			protected void onCancelled() {
-				super.onCancelled();
+			public void run() {
+				if (puzzleGameView.isEnd == false) {
+					if (countNumber <= 0) {
+						timer.cancel();
+						handler.sendEmptyMessage(0);
+					}
+					else if (isFinishing()) {
+						timer.cancel();
+					}
+					countProgressBar.setProgress(countNumber);
+					countNumber--;
+				}
 			}
+		};
+		
+		timer.schedule(timerTask, 0, 1000);
 
-		}.execute();
 	}
 
 	public void showFailDialog() {
