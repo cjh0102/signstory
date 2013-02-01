@@ -13,6 +13,10 @@ public class Point {
 		this.length = length;
 	}
 	
+	public Point() {
+		
+	}
+	
 	public int getX() {
 		return x;
 	}

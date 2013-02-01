@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
@@ -19,6 +20,36 @@ public class PuzzlesActivity extends Activity {
 
 	private ProgressBar countProgressBar;
 	private PuzzleGameView puzzleGameView;
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.e("onStart", "onStart");
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.e("onResume", "" + timeCounterAsyncTask.getStatus());
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.e("onPause", "onPause");
+	}
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.e("onStop", "onStop");
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.e("onDestroy", "" + timeCounterAsyncTask.getStatus());
+	}
+	
+	AsyncTask<Void, Integer, Void> timeCounterAsyncTask;
 
 	@Override 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +57,7 @@ public class PuzzlesActivity extends Activity {
 		setContentView(R.layout.activity_puzzle);
 		
 		countProgressBar = (ProgressBar)findViewById(R.id.counterProgressBar);
+		countProgressBar.setMax(20);
 		puzzleGameView = (PuzzleGameView)findViewById(R.id.puzzleGameView);
 		
 		findViewById(R.id.homeImageViewButton).setOnClickListener(new OnClickListener() {
@@ -41,10 +73,7 @@ public class PuzzlesActivity extends Activity {
 
 	public void startTimeCount() {
 
-		AsyncTask<Void, Integer, Void> timeCounterAsyncTask = new AsyncTask<Void, Integer, Void>(){
-			protected void onPreExecute() {
-				countProgressBar.setMax(20);
-			};
+		timeCounterAsyncTask = new AsyncTask<Void, Integer, Void>(){
 
 			@Override
 			protected Void doInBackground(Void... params) {

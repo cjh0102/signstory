@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.hipits.R;
 import com.hipits.customview.HiddenImageView;
@@ -100,11 +101,10 @@ public class HiddenImageActivity extends Activity {
 			}
 			
 		}.execute();
-		
 	}
 	
 	public void showFailDialog() {
-		AlertDialog.Builder dialog= new AlertDialog.Builder(this);
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 		dialog.setTitle("시간이 지났어요~");
 		dialog.setMessage("실패!");
 		dialog.setPositiveButton("다른게임 하기", new DialogInterface.OnClickListener() {
@@ -122,7 +122,6 @@ public class HiddenImageActivity extends Activity {
 			}
 		});
 		dialog.show();
-		
 	}
 	
 	public void checkCorrectImage(int index) {

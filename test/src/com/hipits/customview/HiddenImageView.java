@@ -28,17 +28,21 @@ import com.hipits.manager.PointManager;
 import com.hipits.model.Point;
 
 public class HiddenImageView extends View {
-	//test
-	private float x;
-	private float y;
+
+	private Point touchPoint;
+	
 	private Bitmap faileBitmap;
-	private Bitmap correctBitmap; 
+	private Bitmap correctBitmap;
+	
 	private Boolean isStart = false;
 	private Boolean isCorrect = false;
+	
 	private Paint paint;
 	private Paint fadePaint;
+	
 	private ArrayList<Rect> correctRects;
 	private ArrayList<Point> correctPoints;
+	
 	private Context context;
 
 	public HiddenImageView(Context context, AttributeSet attrs) {
@@ -50,7 +54,8 @@ public class HiddenImageView extends View {
 
 		paint = new Paint();
 		fadePaint = new Paint();
-
+		touchPoint = new Point();
+		
 		paint.setColor(Color.WHITE);
 		paint.setStyle(Paint.Style.STROKE);
 
@@ -71,8 +76,8 @@ public class HiddenImageView extends View {
 		if (isStart == true) {
 			if (isCorrect == false) {
 				// 정답이 아닌 곳을 눌렀을경우 X를 그림
-				float xx = x - (faileBitmap.getWidth() / 2);
-				float yy = y - (faileBitmap.getHeight() / 2);
+				float xx = touchPoint.getX() - (faileBitmap.getWidth() / 2);
+				float yy = touchPoint.getY() - (faileBitmap.getHeight() / 2);
 				canvas.drawBitmap(faileBitmap, xx, yy, fadePaint);
 			}
 
@@ -99,11 +104,10 @@ public class HiddenImageView extends View {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			isStart = true;
 
-			x = event.getX();
-			y = event.getY();
+			touchPoint.setX((int)event.getX());
+			touchPoint.setY((int)event.getY());
 			Log.e("터치", "터치터치터치");
 
-			Point touchPoint = new Point((int)x, (int)y, 0);
 			isCorrect(touchPoint);
 		}
 		return true;
@@ -131,7 +135,8 @@ public class HiddenImageView extends View {
 				isCorrect = true;
 				correctPoints.add(new Point(rect.centerX(), rect.centerY(), 0));
 				((HiddenImageActivity)context).checkCorrectImage(i);
-				break;
+				invalidate();
+				return;
 			}
 			i++;
 		}
@@ -141,7 +146,6 @@ public class HiddenImageView extends View {
 			fadeOutImage();
 			return;
 		}
-		invalidate();
 	}
 
 	private void resetGame() {
@@ -181,24 +185,21 @@ public class HiddenImageView extends View {
 	}
 
 	public void fadeOutImage() {
-
-		final Handler handler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				fadePaint.setAlpha(msg.what);
-				invalidate();
-			}
-		};
 		
 		AsyncTask<Void, Integer, Void> asyncTask = new AsyncTask<Void, Integer, Void>() {
 			@Override
 			protected Void doInBackground(Void... params) {
 				for (int i = 255; i >= 0; i = i - 51) {
 					SystemClock.sleep(100);
-					handler.sendEmptyMessage(i);
+					publishProgress(i);
 				}
 				return null;
 			}
+			
+			protected void onProgressUpdate(Integer... values) {
+				fadePaint.setAlpha(values[0]);
+				invalidate();
+			};
 		}.execute();
 	}
 }

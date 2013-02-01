@@ -2,15 +2,13 @@ package com.hipits.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hipits.R;
+import com.hipits.manager.DataManager;
 
 public class BookDescriptionActivity extends Activity {
 	
@@ -25,10 +23,10 @@ public class BookDescriptionActivity extends Activity {
 		Log.e("index", ""+ index);
 		
 		ImageView signsImageView = (ImageView)findViewById(R.id.singsImageView);
-		signsImageView.setImageBitmap(BookSelectionActivity.signs.get(index).getBitmap());
+		signsImageView.setImageBitmap(DataManager.signs.get(index).getBitmap());
 		
 		TextView descriptionTextView = (TextView)findViewById(R.id.descriptionTextView);
-		descriptionTextView.setText(BookSelectionActivity.signs.get(index).getDescription());
+		descriptionTextView.setText(DataManager.signs.get(index).getDescription());
 		
 	}
 	
